@@ -20,19 +20,44 @@ public class CalcController {
         return "Добро пожаловать в калькулятор";
     }
 @GetMapping("/plus")
-    public String plus(@RequestParam int num1, @RequestParam int num2)
-        { return num1 + " + " + num2 + " = " + service.plus(num1, num2); }
+    public String plus(@RequestParam (value = "num1", required = false) Integer a,
+                       @RequestParam (value = "num2", required = false) Integer b)
+        { return buildView(a, b, "+"); }
 
     @GetMapping("/minus")
-    public String minus(@RequestParam int num1, @RequestParam int num2)
-        { return num1 + " - " + num2 + " = " + service.minus(num1, num2); }
+    public String minus(@RequestParam (value = "num1", required = false) Integer a,
+                        @RequestParam (value = "num2", required = false) Integer b)
+        { return buildView(a, b, "-"); }
 
     @GetMapping("/multiply")
-    public String multiply(@RequestParam int num1, @RequestParam int num2)
-    { return num1 + " * " + num2 + " = " + service.multiply(num1, num2); }
+    public String multiply(@RequestParam (value = "num1", required = false) Integer a,
+                           @RequestParam (value = "num2", required = false) Integer b)
+    { return buildView(a, b, "*"); }
 
     @GetMapping("/divide")
-    public String divide(@RequestParam int num1, @RequestParam int num2)
-    { return num1 + " / " + num2 + " = " + service.divide(num1, num2); }
+    public String divide(@RequestParam (value = "num1", required = false) Integer a,
+                         @RequestParam (value = "num2", required = false) Integer b)
+    { return buildView(a, b, "/"); }
 
+    public String buildView(Integer a, Integer b, String operator) {
+        Number result = 0;
+    if (a==null || b==null)
+    { return "Не передан параметр"; }
+    switch (operator) {
+        case "+":
+            result = service.plus(a, b);
+            break;
+        case "-":
+            result = service.minus(a, b);
+            break;
+        case "*":
+            result = service.multiply(a, b);
+            break;
+        case "/":
+            if (b == 0)
+            { return "Нельзя делить на ноль"; }
+            result = service.divide(a, b);
+            break; }
+    return a + " " + operator + " " + b + " = " + result;
+    }
 }
